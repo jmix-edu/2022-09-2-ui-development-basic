@@ -1,6 +1,30 @@
 <window xmlns="http://jmix.io/schema/ui/window"
         caption="msg://application.caption">
-
+    <data>
+        <collection id="projectsDc" class="com.company.jmixpm.entity.Project">
+            <fetchPlan extends="_instance_name"/>
+            <loader id="projectsDl">
+                <query>
+                    <![CDATA[select e from Project e]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="tasksDc" class="com.company.jmixpm.entity.Task">
+            <fetchPlan extends="_base"/>
+            <loader id="tasksDl">
+                <query>
+                    <![CDATA[select e from Task_ e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <actions>
+        <action id="addTask" caption="msg://addTask.caption" icon="PLUS"/>
+        <action id="refresh" icon="REFRESH" caption="msg://refresh.caption"/>
+    </actions>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
     <layout>
         <cssLayout id="horizontalWrap"
                    stylename="jmix-drawer-layout">
@@ -41,7 +65,40 @@
             <workArea id="workArea"
                       stylename="jmix-workarea"
                       height="100%">
-                <initialLayout spacing="true" margin="true">
+                <initialLayout spacing="true" margin="true" expand="tasksCalendar">
+                    <hbox id="topBox" width="100%" expand="welcomeBox">
+                        <form id="form">
+                            <column width="400px">
+                                <entityComboBox id="projectSelector"
+                                                required="true"
+                                                caption="msg://projectSelector.caption"
+                                                optionsContainer="projectsDc"/>
+                                <textField id="nameSelector"
+                                           datatype="string"
+                                           caption="msg://nameSelector.caption"/>
+                                <dateField id="dateSelector"
+                                           caption="msg://dateSelector.caption"
+                                           datatype="localDateTime"/>
+                                <hbox width="AUTO" spacing="true">
+                                    <button id="addTaskBtn" action="addTask" primary="true"/>
+                                    <button id="refreshBtn" action="refresh"/>
+                                </hbox>
+                            </column>
+                        </form>
+                        <vbox id="welcomeBox" height="100%">
+                            <label align="MIDDLE_CENTER" value="msg://label.value"/>
+                        </vbox>
+                    </hbox>
+                    <calendar id="tasksCalendar"
+                              width="100%"
+                              weeklyCaptionFormat="dd/MM/yyyy"
+                              dataContainer="tasksDc"
+                              startDateProperty="startDate"
+                              endDateProperty="endDate"
+                              captionProperty="caption"
+                              firstVisibleHourOfDay="9"
+                              lastVisibleHourOfDay="18"
+                    />
                 </initialLayout>
             </workArea>
         </cssLayout>
